@@ -1,0 +1,1540 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Data\_Types\_and\_Operators}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{welcome-to-introduction-to-python}{%
+\section{Welcome to Introduction to
+Python!}\label{welcome-to-introduction-to-python}}
+
+    In this course, we use Python version 3 (or simply Python 3). If you'd
+like more details on previous versions of Python and how version 3
+differs from previous versions, check out the
+\href{https://en.wikipedia.org/wiki/History_of_Python}{History of
+Python} on Wikipedia. If you're new to Python or programming in general,
+this article will make more sense after you've completed a lesson or
+two, so you may want to hold off for now. All you need to know now is
+that your solution code for the programming exercises. in this course
+will be graded based on Python 3 code.
+
+    \hypertarget{programming-in-python}{%
+\subsection{Programming in Python}\label{programming-in-python}}
+
+As you learn Python throughout this course, there are a few things you
+should keep in mind. 1. Python is case sensitive. 2. Spacing is
+important. 3. Use error messages to help you learn.
+
+Let's get started!
+
+    \hypertarget{summary}{%
+\subsection{Summary}\label{summary}}
+
+    \hypertarget{lesson-summary}{%
+\subsubsection{Lesson Summary}\label{lesson-summary}}
+
+You learned a ton in this lesson! To summarize, here's a recap of the
+data types and operators we covered.
+
+\hypertarget{data-types}{%
+\subsubsection{Data Types}\label{data-types}}
+
+We covered four important data types that you'll use all the time in
+programming:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Data Type
+\item
+  Constructor
+\item
+  Example:int \textbar{} int() float \textbar{} float() \textbar{}
+  string \textbar{} '\,' or ``\,'' or str() \textbar{} ``this is a
+  string'' \textbar{} \textbar{} bool \textbar{} bool() \textbar{} True
+  or False \textbar{}
+\end{enumerate}
+
+    \hypertarget{operators}{%
+\subsubsection{Operators}\label{operators}}
+
+We also covered four useful sets of operators:
+
+    
+
+    
+
+    \hypertarget{data-types-and-operators}{%
+\subsection{Data Types and Operators}\label{data-types-and-operators}}
+
+Welcome to this lesson on Data Types and Operators! You'll learn about:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Data Types: Integers, Floats, Booleans, Strings
+\item
+  Operators: Arithmetic, Assignment, Comparison, Logical
+\item
+  Built-In Functions, Type Conversion
+\item
+  Whitespace and Style Guidelines
+\end{enumerate}
+
+    \hypertarget{arithmetic-operators}{%
+\subsubsection{Arithmetic Operators}\label{arithmetic-operators}}
+
+Arithmetic operators: 1. {[}+{]} Addition. 2. {[}-{]} Subtraction. 3.
+{[}*{]} Multiplication. 4. {[}/{]} Division. 5. {[}\%{]} Mod (the
+remainder after dividing). 6. {[}**{]} Exponentiation (note that \^{}
+does not do this operation, as you might have seen in other languages).
+7. {[}//{]} Divides and rounds down to the nearest integer.
+
+The usual order of mathematical operations holds in Python, which you
+can review in this Math Forum
+\href{https://www.nctm.org/classroomresources/}{page} if needed.
+
+Bitwise operators are special operators in Python that you can learn
+more about \href{https://wiki.python.org/moin/BitwiseOperators}{here} if
+you'd like.
+
+\hypertarget{examples}{%
+\paragraph{Examples:}\label{examples}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  print(3 + 5) \# 8
+\item
+  print(1 + 2 + 3 * 3) \# 12
+\item
+  print(3 ** 2) \# 9
+\item
+  print(9 \% 2) \# 1
+\end{enumerate}
+
+    \hypertarget{quiz-arithmetic-operators}{%
+\subsubsection{Quiz: Arithmetic
+Operators}\label{quiz-arithmetic-operators}}
+
+Quiz: Average Electricity Bill It's time to try a calculation in Python!
+
+My electricity bills for the last three months have been \$23, \$32 and
+\$64. What is the average monthly electricity bill over the three month
+period? Write an expression to calculate the mean, and use print() to
+view the result.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Write an expression that calculates the average of 23, 32 and 64}
+\PY{n}{summation} \PY{o}{=} \PY{l+m+mi}{23} \PY{o}{+} \PY{l+m+mi}{32} \PY{o}{+} \PY{l+m+mi}{64}
+\PY{n}{num\PYZus{}months} \PY{o}{=} \PY{l+m+mi}{3}
+\PY{c+c1}{\PYZsh{} Place the expression in this print statement}
+\PY{n}{avg} \PY{o}{=} \PY{n}{summation}\PY{o}{/}\PY{n}{num\PYZus{}months}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{avg}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+39.666666666666664
+    \end{Verbatim}
+
+    Quiz: Calculate :
+
+In this quiz you're going to do some calculations for a tiler. Two parts
+of a floor need tiling. One part is 9 tiles wide by 7 tiles long, the
+other is 5 tiles wide by 7 tiles long. Tiles come in packages of 6.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  How many tiles are needed?
+\item
+  You buy 17 packages of tiles containing 6 tiles each. How many tiles
+  will be left over?
+\end{enumerate}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Fill this in with an expression that calculates how many tiles are needed.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{9}\PY{o}{*}\PY{l+m+mi}{7} \PY{o}{+} \PY{l+m+mi}{5}\PY{o}{*}\PY{l+m+mi}{7}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Fill this in with an expression that calculates how many tiles will be left over.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{17}\PY{o}{*}\PY{l+m+mi}{6} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{l+m+mi}{9}\PY{o}{*}\PY{l+m+mi}{7} \PY{o}{+} \PY{l+m+mi}{5}\PY{o}{*}\PY{l+m+mi}{7}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+98
+4
+    \end{Verbatim}
+
+    \hypertarget{variables-and-assignment-operators}{%
+\subsubsection{Variables and Assignment
+Operators}\label{variables-and-assignment-operators}}
+
+Variables and Assignment Operators: From this page, you will get your
+first look at variables in Python. There are three videos in this
+concept to show you some different cases you might run into!
+
+    \hypertarget{variables-i}{%
+\subsubsection{Variables I}\label{variables-i}}
+
+Variables are used all the time in Python! Below is the example you saw
+in the video where we performed the following:
+
+mv\_population = 74728
+
+Here mv\_population is a variable, which holds the value of 74728. This
+assigns the item on the right to the name on the left. which is actually
+a little different than mathematical equality, as 74728 does not hold
+the value of mv\_population.
+
+In any case, whatever term is on the left side, is now a name for
+whatever value is on the right side. Once a value has been assigned to a
+variable name, you can access the value from the variable name.
+
+    \hypertarget{variables-ii}{%
+\subsubsection{Variables II}\label{variables-ii}}
+
+In this video you saw that the following two are equivalent in terms of
+assignment:
+
+x = 3 y = 4 z = 5
+
+and
+
+x, y, z = 3, 4, 5
+
+However, the above isn't a great way to assign variables in most cases,
+because our variable names should be descriptive of the values they
+hold.
+
+Besides writing variable names that are descriptive, there are a few
+things to watch out for when naming variables in Python.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Only use ordinary letters, numbers and underscores in your variable
+  names. They can't have spaces, and need to start with a letter or
+  underscore.
+\item
+  You can't use Python's reserved words, or ``keywords,'' as variable
+  names.There are reserved words in every programming language that have
+  important purposes, and you'll learn about some of these throughout
+  this course. Creating names that are descriptive of the values often
+  will help you avoid using any of these keywords. Here you can see a
+  \href{https://docs.python.org/3/reference/lexical_analysis.html\#keywords}{table
+  of Python's reserved words}.
+\item
+  The pythonic way to name variables is to use all lowercase letters and
+  underscores to separate words.
+\end{enumerate}
+
+YES my\_height = 58 my\_lat = 40 my\_long = 105 NO my height = 58 MYLONG
+= 40 MyLat = 105
+
+Though the last two of these would work in python, they are not pythonic
+ways to name variables. The way we name variables is called snake case,
+because we tend to connect the words with underscores.
+
+    Example:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  mv\_population = 74728
+\item
+  mv\_population = 74728 + 4000 - 600
+\item
+  print(mv\_population) \# 78128
+\end{enumerate}
+
+Assignment Operators: Below are the assignment operators from the video.
+You can also use *= in a similar way, but this is less common than the
+operations shown below. You can find some practice with much of what we
+have already covered
+\href{https://www.programiz.com/python-programming/operators}{here}.
+
+    
+
+    \hypertarget{quiz-variables-and-assignment-operators}{%
+\subsubsection{Quiz: Variables and Assignment
+Operators}\label{quiz-variables-and-assignment-operators}}
+
+Quiz: Assign and Modify Variables Now it's your turn to work with
+variables. The comments in this quiz (the lines that begin with \#) have
+instructions for creating and modifying variables. After each comment
+write a line of code that implements the instruction.
+
+Note that this code uses
+\href{https://en.wikipedia.org/wiki/Scientific_notation}{scientific
+notation} to define large numbers. 4.445e8 is equal to 4.445 \emph{10} *
+8 which is equal to 444500000.0.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} The current volume of a water reservoir (in cubic metres)}
+\PY{n}{reservoir\PYZus{}volume} \PY{o}{=} \PY{l+m+mf}{4.445e8}
+\PY{c+c1}{\PYZsh{}\PYZsh{} The amount of rainfall from a storm (in cubic metres)}
+\PY{n}{rainfall} \PY{o}{=} \PY{l+m+mf}{5e6}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} decrease the rainfall variable by 10\PYZpc{} to account for runoff}
+\PY{n}{rainfall} \PY{o}{*}\PY{o}{=} \PY{l+m+mf}{.9}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} add the rainfall variable to the reservoir\PYZus{}volume variable}
+\PY{n}{reservoir\PYZus{}volume} \PY{o}{+}\PY{o}{=} \PY{n}{rainfall}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} increase reservoir\PYZus{}volume by 5\PYZpc{} to account for stormwater that flows}
+\PY{c+c1}{\PYZsh{}\PYZsh{} into the reservoir in the days following the storm}
+\PY{n}{reservoir\PYZus{}volume} \PY{o}{*}\PY{o}{=} \PY{l+m+mf}{1.05}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} decrease reservoir\PYZus{}volume by 5\PYZpc{} to account for evaporation}
+\PY{n}{reservoir\PYZus{}volume} \PY{o}{*}\PY{o}{=} \PY{l+m+mf}{0.95}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} subtract 2.5e5 cubic metres from reservoir\PYZus{}volume to account for water}
+\PY{c+c1}{\PYZsh{}\PYZsh{} that\PYZsq{}s piped to arid regions.}
+\PY{n}{reservoir\PYZus{}volume} \PY{o}{\PYZhy{}}\PY{o}{=} \PY{l+m+mf}{2.5e5} 
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} print the new value of the reservoir\PYZus{}volume variable}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{reservoir\PYZus{}volume}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+447627500.0
+    \end{Verbatim}
+
+    \hypertarget{integers-and-floats}{%
+\subsection{Integers and Floats}\label{integers-and-floats}}
+
+    \hypertarget{integers-and-floats}{%
+\subsubsection{Integers and Floats}\label{integers-and-floats}}
+
+There are two Python data types that could be used for numeric values:
+\textgreater\textgreater int - for integer values float - for decimal or
+floating point values
+
+You can create a value that follows the data type by using the following
+syntax:
+
+\begin{quote}
+\begin{quote}
+x = int(4.7) \# x is now an integer 4 y = float(4) \# y is now a float
+of 4.0
+\end{quote}
+\end{quote}
+
+You can check the type by using the type function:
+\textgreater\textgreater\textgreater{} print(type(x)) int
+\textgreater\textgreater\textgreater{} print(type(y)) float
+
+    Because the float, or approximation,for 0.1 is actually slightly more
+than 0.1, when we add several of them together we can see the difference
+between the mathematically correct answer and the one that Python
+creates.
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(.1 + .1 + .1 == .3) False
+\end{quote}
+\end{quote}
+\end{quote}
+
+You can see more on this
+\href{https://docs.python.org/3/tutorial/floatingpoint.html}{here}.
+
+    \hypertarget{python-best-practices}{%
+\subsubsection{Python Best Practices}\label{python-best-practices}}
+
+For all the best practices, \href{https://peps.python.org/pep-0008/}{see
+the PEP8 Guidelines}.
+
+You can use the atom package
+\href{https://github.blog/2022-06-08-sunsetting-atom/}{linter-python-pep8}
+to use pep8 within your own programming environment in the Atom text
+editor, but more on this later. If you aren't familiar with text editors
+yet, and you are performing all of your programming in the classroom, no
+need to worry about this right now.
+
+Follow these guidelines to make other programmers and future you happy!
+
+\begin{quote}
+\begin{quote}
+Good print(4 + 5)
+\end{quote}
+\end{quote}
+
+\begin{quote}
+\begin{quote}
+Bad print( 4 + 5)
+\end{quote}
+\end{quote}
+
+You should limit each line of code to 80 characters, though 99 is okay
+for certain use cases. You can thank
+\href{https://softwareengineering.stackexchange.com/questions/148677/why-is-80-characters-the-standard-limit-for-code-width}{IBM
+for this ruling.}
+
+Why are these conventions important? Although how you format the code
+doesn't affect how it runs, following standard style guidelines makes
+code easier to read and consistent among different developers on a team.
+
+    \hypertarget{booleans-comparison-operators-and-logical-operators}{%
+\subsection{Booleans, Comparison Operators, and Logical
+Operators}\label{booleans-comparison-operators-and-logical-operators}}
+
+    \hypertarget{examples}{%
+\paragraph{Examples}\label{examples}}
+
+\begin{quote}
+\begin{quote}
+x = 42 \textgreater{} 43 \# False age = 14 is\_teen = age \textgreater{}
+12 and age \textless{} 20 print(is\_teen) \# True
+\end{quote}
+\end{quote}
+
+    \hypertarget{booleans-comparison-operators-and-logical-operators}{%
+\subsubsection{Booleans, Comparison Operators, and Logical
+Operators}\label{booleans-comparison-operators-and-logical-operators}}
+
+The bool data type holds one of the values True or False, which are
+often encoded as 1 or 0, respectively. There are 6 comparison operators
+that are common to see in order to obtain a bool value:
+
+    \href{https://www.irishtimes.com/news/science/how-george-boole-s-zeroes-and-ones-changed-the-world-1.2014673}{Here}
+is more information on how George Boole changed the world!
+
+    \hypertarget{quiz-booleans-comparison-operators-and-logical-operators}{%
+\subsection{Quiz: Booleans, Comparison Operators, and Logical
+Operators}\label{quiz-booleans-comparison-operators-and-logical-operators}}
+
+    \hypertarget{quiz-which-is-denser-rio-or-san-francisco}{%
+\subsubsection{Quiz: Which is denser, Rio or San
+Francisco?}\label{quiz-which-is-denser-rio-or-san-francisco}}
+
+Try comparison operators in this quiz! This code calculates the
+population densities of Rio de Janeiro and San Francisco.
+
+Write code to compare these densities. Is the population of San
+Francisco more dense than that of Rio de Janeiro? Print True if it is
+and False if not.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sf\PYZus{}population}\PY{p}{,} \PY{n}{sf\PYZus{}area} \PY{o}{=} \PY{l+m+mi}{864816}\PY{p}{,} \PY{l+m+mf}{231.89}
+
+\PY{n}{rio\PYZus{}population}\PY{p}{,} \PY{n}{rio\PYZus{}area} \PY{o}{=} \PY{l+m+mi}{6453682}\PY{p}{,} \PY{l+m+mf}{486.5}
+
+\PY{n}{san\PYZus{}francisco\PYZus{}pop\PYZus{}density} \PY{o}{=} \PY{n}{sf\PYZus{}population}\PY{o}{/}\PY{n}{sf\PYZus{}area}
+
+\PY{n}{rio\PYZus{}de\PYZus{}janeiro\PYZus{}pop\PYZus{}density} \PY{o}{=} \PY{n}{rio\PYZus{}population}\PY{o}{/}\PY{n}{rio\PYZus{}area}
+
+\PY{c+c1}{\PYZsh{} Write code that prints True if San Francisco is denser than Rio, and False otherwise}
+\PY{k}{if}\PY{p}{(}\PY{n}{san\PYZus{}francisco\PYZus{}pop\PYZus{}density} \PY{o}{\PYZgt{}} \PY{n}{rio\PYZus{}de\PYZus{}janeiro\PYZus{}pop\PYZus{}density}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+    
+\PY{k}{elif}\PY{p}{(}\PY{n}{rio\PYZus{}de\PYZus{}janeiro\PYZus{}pop\PYZus{}density} \PY{o}{\PYZgt{}} \PY{n}{san\PYZus{}francisco\PYZus{}pop\PYZus{}density}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{k+kc}{False}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+False
+    \end{Verbatim}
+
+    \hypertarget{strings}{%
+\subsection{Strings}\label{strings}}
+
+    \hypertarget{strings}{%
+\subsubsection{Strings}\label{strings}}
+
+Strings in Python are shown as the variable type str. You can define a
+string with either double quotes '' or single quotes '. If the string
+you are creating actually has one of these two values in it, then you
+need to be careful to assure your code doesn't give an error.
+
+    \begin{quote}
+\begin{quote}
+\begin{quote}
+my\_string = `this is a string!' my\_string2 = ``this is also a
+string!!!''
+\end{quote}
+\end{quote}
+\end{quote}
+
+You can also include a ~in your string to be able to include one of
+these quotes:
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+this\_string = `Simon\textquotesingle s skateboard is in the garage.'
+print(this\_string)
+\end{quote}
+\end{quote}
+\end{quote}
+
+Simon's skateboard is in the garage.
+
+    If we don't use this, notice we get the following error:
+
+\begin{quote}
+\begin{quote}
+this\_string = `Simon's skateboard is in the garage.'
+\end{quote}
+\end{quote}
+
+'\,'\,' File \textless{}``ipython-input-20-e80562c2a290''\textgreater,
+line 1 this\_string = `Simon's skateboard is in the garage.' '\,'\,'
+\^{} SyntaxError: invalid syntax
+
+    \hypertarget{the-len-function}{%
+\subsubsection{The len() function}\label{the-len-function}}
+
+len() is a built-in Python function that returns the length of an
+object, like a string. The length of a string is the number of
+characters in the string. This will always be an integer.
+
+There is an example above, but here's another one:
+
+\begin{quote}
+\begin{quote}
+print(len(``ababa'') / len(``ab''))
+\end{quote}
+\end{quote}
+
+2.5
+
+You know what the data types are for len(``ababa'') and len(``ab'').
+Notice the data type of their resulting quotient here.
+
+    \hypertarget{concatenation}{%
+\subsubsection{Concatenation}\label{concatenation}}
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+first\_word = `Hello' second\_word = `There' print(first\_word +
+second\_word)
+\end{quote}
+\end{quote}
+\end{quote}
+
+HelloThere
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(first\_word + ' ' + second\_word)
+\end{quote}
+\end{quote}
+\end{quote}
+
+Hello There
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(first\_word * 5)
+\end{quote}
+\end{quote}
+\end{quote}
+
+HelloHelloHelloHelloHello
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(len(first\_word))
+\end{quote}
+\end{quote}
+\end{quote}
+
+5
+
+    \hypertarget{indexing}{%
+\subsubsection{Indexing}\label{indexing}}
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+first\_word{[}0{]}
+\end{quote}
+\end{quote}
+\end{quote}
+
+H
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+first\_word{[}1{]}
+\end{quote}
+\end{quote}
+\end{quote}
+
+e
+
+    \hypertarget{quiz-strings}{%
+\subsection{Quiz: Strings}\label{quiz-strings}}
+
+    \hypertarget{quiz-fix-the-quote}{%
+\subsubsection{Quiz: Fix the Quote}\label{quiz-fix-the-quote}}
+
+The line of code in the following quiz will cause a SyntaxError, thanks
+to the misuse of quotation marks. First run it with Test Run to view the
+error message. Then resolve the problem so that the quote (from
+\href{https://www.goodreads.com/author/quotes/203714.Henry_Ford}{Henry
+Ford}) is correctly assigned to the variable ford\_quote.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} TODO: Fix this string!}
+\PY{n}{ford\PYZus{}quote} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Whether you think you can, or you think you can}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{t\PYZhy{}\PYZhy{}you}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{re right.}\PY{l+s+s1}{\PYZsq{}}
+
+\PY{c+c1}{\PYZsh{} TODO: Fix this string!}
+\PY{n}{ford\PYZus{}quote} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Whether you think you can, or you think you can}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{t\PYZhy{}\PYZhy{}you}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{re right.}\PY{l+s+s2}{\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{quiz-write-a-server-log-message}{%
+\subsubsection{Quiz: Write a Server Log
+Message}\label{quiz-write-a-server-log-message}}
+
+In this programming quiz, you're going to use what you've learned about
+strings to write a logging message for a server.
+
+You'll be provided with example data for a user, the time of their visit
+and the site they accessed. You should use the variables provided and
+the techniques you've learned to print a log message like this one (with
+the username, url, and timestamp replaced with values from the
+appropriate variables):
+
+Yogesh accessed the site {[}http://petshop.com/pets/reptiles/pythons{]}
+at 16:20.
+
+Use the Test Run button to see your results as you work on coding this
+piece by piece.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{username} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Kinari}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{timestamp} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{04:50}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{n}{url} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{http://petshop.com/pets/mammals/cats}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{c+c1}{\PYZsh{} TODO: print a log message using the variables above.}
+
+\PY{c+c1}{\PYZsh{} The message should have the same format as this one:}
+
+\PY{c+c1}{\PYZsh{} \PYZdq{}Yogesh accessed the site http://petshop.com/pets/reptiles/pythons at 16:20.\PYZdq{}}
+
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{username}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ accessed the site }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{url} \PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ at }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+} \PY{n}{timestamp} \PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Kinari accessed the site http://petshop.com/pets/mammals/cats at 04:50.
+    \end{Verbatim}
+
+    \hypertarget{quiz-len}{%
+\subsubsection{Quiz: len()}\label{quiz-len}}
+
+Use string concatenation and the len() function to find the length of a
+certain movie star's actual full name. Store that length in the
+name\_length variable. Don't forget that there are spaces in between the
+different parts of a name!
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{given\PYZus{}name} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{William}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{middle\PYZus{}names} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Bradley}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{family\PYZus{}name} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Pitt}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{n}{name\PYZus{}length} \PY{o}{=}  \PY{n+nb}{len}\PY{p}{(}\PY{n}{given\PYZus{}name}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{middle\PYZus{}names}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{family\PYZus{}name}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} todo: calculate how long this name is}
+\PY{n}{name\PYZus{}length} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{given\PYZus{}name}\PY{p}{)} \PY{o}{+} \PY{n+nb}{len}\PY{p}{(}\PY{n}{middle\PYZus{}names}\PY{p}{)} \PY{o}{+} \PY{n+nb}{len}\PY{p}{(}\PY{n}{family\PYZus{}name}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{2}
+
+\PY{c+c1}{\PYZsh{} Now we check to make sure that the name fits within the driving license character limit}
+
+\PY{c+c1}{\PYZsh{} Nothing you need to do here}
+\PY{n}{driving\PYZus{}license\PYZus{}character\PYZus{}limit} \PY{o}{=} \PY{l+m+mi}{28}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{name\PYZus{}length} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{n}{driving\PYZus{}license\PYZus{}character\PYZus{}limit}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+True
+    \end{Verbatim}
+
+    \hypertarget{type-and-type-conversion}{%
+\subsection{Type and Type Conversion}\label{type-and-type-conversion}}
+
+    You have seen four data types so far: 1. int 2. float 3. bool 4. string
+
+You got a quick look at type() from an earlier video, and it can be used
+to check the data type of any variable you are working with.
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(type(633))
+\end{quote}
+\end{quote}
+\end{quote}
+
+int
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(type(633.0))
+\end{quote}
+\end{quote}
+\end{quote}
+
+float
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(type(`633'))
+\end{quote}
+\end{quote}
+\end{quote}
+
+str
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+print(type(True))
+\end{quote}
+\end{quote}
+\end{quote}
+
+bool
+
+You saw that you can change variable types to perform different
+operations. For example, ``0'' + ``5''
+
+provides completely different output than 0 + 5
+
+What do you think the below would provide? ``0'' + 5
+
+How about the code here: 0 + ``5''
+
+Checking your variable types is really important to assure that you are
+retrieving the results you want when programming.
+
+    \hypertarget{quiz-type-and-type-conversion}{%
+\subsection{Quiz: Type and Type
+Conversion}\label{quiz-type-and-type-conversion}}
+
+    \hypertarget{type-playground}{%
+\subsubsection{Type Playground}\label{type-playground}}
+
+Use this programming space with Test Run to experiment with types of
+objects. Don't forget to use print to see the output of your code.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{type}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+<class 'str'>
+    \end{Verbatim}
+
+    \hypertarget{quiz-total-sales}{%
+\subsubsection{Quiz: Total Sales}\label{quiz-total-sales}}
+
+In this quiz, you'll need to change the types of the input and output
+data in order to get the result you want.
+
+Calculate and print the total sales for the week from the data provided.
+Print out a string of the form ``This week's total sales: xxx'', where
+xxx will be the actual total of all the numbers. You'll need to change
+the type of the input data in order to calculate that total.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{mon\PYZus{}sales} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{121}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{tues\PYZus{}sales} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{105}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{wed\PYZus{}sales} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{110}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{thurs\PYZus{}sales} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{98}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{fri\PYZus{}sales} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{95}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{c+c1}{\PYZsh{}TODO: Print a string with this format: This week\PYZsq{}s total sales: xxx}
+
+\PY{n}{mon\PYZus{}sales} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{mon\PYZus{}sales}\PY{p}{)}
+\PY{n}{tues\PYZus{}sales} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{tues\PYZus{}sales}\PY{p}{)}
+\PY{n}{wed\PYZus{}sales} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{wed\PYZus{}sales}\PY{p}{)}
+\PY{n}{thurs\PYZus{}sales} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{thurs\PYZus{}sales}\PY{p}{)}
+\PY{n}{fri\PYZus{}sales} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{fri\PYZus{}sales}\PY{p}{)}
+
+\PY{n}{r} \PY{o}{=} \PY{n}{mon\PYZus{}sales} \PY{o}{+} \PY{n}{tues\PYZus{}sales} \PY{o}{+} \PY{n}{wed\PYZus{}sales} \PY{o}{+} \PY{n}{thurs\PYZus{}sales} \PY{o}{+} \PY{n}{fri\PYZus{}sales}
+
+\PY{c+c1}{\PYZsh{}print(r)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{This week}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{s total sales: }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{r}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} You will probably need to write some lines of code before the print statement.}
+\PY{n}{weekly\PYZus{}sales} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{mon\PYZus{}sales}\PY{p}{)} \PY{o}{+} \PY{n+nb}{int}\PY{p}{(}\PY{n}{tues\PYZus{}sales}\PY{p}{)} \PY{o}{+} \PY{n+nb}{int}\PY{p}{(}\PY{n}{wed\PYZus{}sales}\PY{p}{)} \PY{o}{+} \PY{n+nb}{int}\PY{p}{(}\PY{n}{thurs\PYZus{}sales}\PY{p}{)} \PY{o}{+} \PY{n+nb}{int}\PY{p}{(}\PY{n}{fri\PYZus{}sales}\PY{p}{)}
+\PY{n}{weekly\PYZus{}sales} \PY{o}{=} \PY{n+nb}{str}\PY{p}{(}\PY{n}{weekly\PYZus{}sales}\PY{p}{)}  \PY{c+c1}{\PYZsh{}convert the type back!!}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{This week}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{s total sales: }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{weekly\PYZus{}sales}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+This week's total sales: 529
+This week's total sales: 529
+    \end{Verbatim}
+
+    \hypertarget{string-methods}{%
+\subsection{String Methods}\label{string-methods}}
+
+    In this video you were introduced to methods. Methods are like some of
+the functions you have already seen: 1. len(``this'') 2. type(12) 3.
+print(``Hello world'')
+
+These three above are functions - notice they use parentheses, and
+accept one or more arguments. Functions will be studied in much more
+detail in a later lesson!
+
+A method in Python behaves similarly to a function. Methods actually are
+functions that are called using dot notation. For example, lower() is a
+string method that can be used like this, on a string called ``sample
+string'': sample\_string.lower().
+
+Methods are specific to the data type for a particular variable. So
+there are some built-in methods that are available for all strings,
+different methods that are available for all integers, etc.
+
+    
+
+    You can see that the count and find methods both take another argument.
+However, the .islower() method does not accept another argument.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{my\PYZus{}string} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{sebastian thrun}\PY{l+s+s2}{\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{my\PYZus{}string}\PY{o}{.}\PY{n}{islower}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+True
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{my\PYZus{}string}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+2
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{my\PYZus{}string}\PY{o}{.}\PY{n}{find}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+3
+\end{Verbatim}
+\end{tcolorbox}
+        
+    One important string method: format()
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{maria\PYZus{}string} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Maria loves }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ and }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{maria\PYZus{}string}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{math}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{statistics}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Maria loves math and statistics
+    \end{Verbatim}
+
+    More advanced students can learn more about the formal syntax for using
+the format() string method
+\href{https://docs.python.org/3.6/library/string.html\#format-string-syntax}{here}.
+
+    \hypertarget{another-important-string-method-split}{%
+\subsubsection{Another important string method:
+split()}\label{another-important-string-method-split}}
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{new\PYZus{}str} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The cow jumped over the moon.}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{new\PYZus{}str}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+['The', 'cow', 'jumped', 'over', 'the', 'moon.']
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Here  the separator is space, and the maxsplit argument is set to 3.}
+\PY{n}{new\PYZus{}str} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The cow jumped over the moon.}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{new\PYZus{}str}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+['The', 'cow', 'jumped', 'over the moon.']
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}3. Using \PYZsq{}.\PYZsq{} or period as a separator.}
+\PY{n}{new\PYZus{}str} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The cow jumped over the moon.}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{new\PYZus{}str}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+['The cow jumped over the moon', '']
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}4. Using no separators but having a maxsplit argument of 3.}
+\PY{n}{new\PYZus{}str} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The cow jumped over the moon.}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{new\PYZus{}str}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{k+kc}{None}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+['The', 'cow', 'jumped', 'over the moon.']
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{quiz-string-methods-practice}{%
+\subsection{Quiz: String Methods
+Practice}\label{quiz-string-methods-practice}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Remember, \PYZbs{}n is a special sequence of characters that causes a line break (a new line).}
+\PY{n}{verse} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{If you can keep your head when all about you}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{  }\PY{l+s+se}{\PYZbs{}}
+\PY{l+s+s2}{    Are losing theirs and blaming it on you,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{If you can trust yourself when all men doubt you,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{ }\PY{l+s+se}{\PYZbs{}}
+\PY{l+s+s2}{        But make allowance for their doubting too;}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{If you can wait and not be tired by waiting,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{ }\PY{l+s+se}{\PYZbs{}}
+\PY{l+s+s2}{            Or being lied about, don’t deal in lies,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Or being hated, don’t give way to hating,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{ }\PY{l+s+se}{\PYZbs{}}
+\PY{l+s+s2}{                And yet don’t look too good, nor talk too wise:}\PY{l+s+s2}{\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Use the code editor below to answer the following questions about verse
+and use Test Run to check your output in the quiz at the bottom of this
+page. 1. What is the length of the string variable verse? 2. What is the
+index of the first occurrence of the word `and' in verse? 3. What is the
+index of the last occurrence of the word `you' in verse? 4. What is the
+count of occurrences of the word `you' in the verse?
+
+You will need to refer to Python's
+\href{https://docs.python.org/2/library/string.html}{string methods
+documentation}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{verse} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{If you can keep your head when all about you}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{  Are losing theirs and blaming it on you,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{If you can trust yourself when all men doubt you,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{  But make allowance for their doubting too;}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{If you can wait and not be tired by waiting,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{  Or being lied about, don’t deal in lies,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Or being hated, don’t give way to hating,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{  And yet don’t look too good, nor talk too wise:}\PY{l+s+s2}{\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{verse}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Use the appropriate functions and methods to answer the questions above}
+
+\PY{c+c1}{\PYZsh{} Bonus: practice using .format() to output your answers in descriptive messages!}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Verse has a length of }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ characters.}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{verse}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The first occurence of the word }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{and}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ occurs at the }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{th index.}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{verse}\PY{o}{.}\PY{n}{find}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{and}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The last occurence of the word }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{you}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ occurs at the }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{th index.}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{verse}\PY{o}{.}\PY{n}{rfind}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{you}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The word }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{you}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ occurs }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ times in the verse.}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{verse}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{you}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+If you can keep your head when all about you
+  Are losing theirs and blaming it on you,
+If you can trust yourself when all men doubt you,
+  But make allowance for their doubting too;
+If you can wait and not be tired by waiting,
+  Or being lied about, don’t deal in lies,
+Or being hated, don’t give way to hating,
+  And yet don’t look too good, nor talk too wise:
+Verse has a length of 362 characters.
+The first occurence of the word 'and' occurs at the 65th index.
+The last occurence of the word 'you' occurs at the 186th index.
+The word 'you' occurs 8 times in the verse.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{message} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Verse has a length of }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ characters.}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{The first occurence of the }\PY{l+s+se}{\PYZbs{}}
+\PY{l+s+s2}{word }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{and}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ occurs at the }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{th index.}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{The last occurence of the word }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{you}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ }\PY{l+s+se}{\PYZbs{}}
+\PY{l+s+s2}{occurs at the }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{th index.}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{The word }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{you}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ occurs }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ times in the verse.}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{n}{length} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{verse}\PY{p}{)}
+\PY{n}{first\PYZus{}idx} \PY{o}{=} \PY{n}{verse}\PY{o}{.}\PY{n}{find}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{and}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{last\PYZus{}idx} \PY{o}{=} \PY{n}{verse}\PY{o}{.}\PY{n}{rfind}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{you}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{count} \PY{o}{=} \PY{n}{verse}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{you}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{message}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{length}\PY{p}{,} \PY{n}{first\PYZus{}idx}\PY{p}{,} \PY{n}{last\PYZus{}idx}\PY{p}{,} \PY{n}{count}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Verse has a length of 362 characters.
+The first occurence of the word 'and' occurs at the 65th index.
+The last occurence of the word 'you' occurs at the 186th index.
+The word 'you' occurs 8 times in the verse.
+    \end{Verbatim}
+
+    \hypertarget{whats-next}{%
+\subsection{What's Next?}\label{whats-next}}
+
+Now that you are familiar with some basic data types and operators, in
+the next lesson, you'll learn about data structures, where you organize
+and group together these data types into different containers. You'll
+also learn about the two remaining types of operators in Python, along
+with more useful built-in functions and methods.
+
+    ! jupyter nbconvert testnotebook.ipynb --to python
+
+    jupyter nbconvert --to pdf --output-dir=output\_folder
+your\_notebook.ipynb
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{!} jupyter nbconvert \PYZhy{}\PYZhy{}to pdf Data\PYZus{}Types\PYZus{}and\PYZus{}Operators.ipynb
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[NbConvertApp] Converting notebook Data\_Types\_and\_Operators.ipynb to pdf
+[NbConvertApp] Writing 64927 bytes to notebook.tex
+[NbConvertApp] Building PDF
+Traceback (most recent call last):
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}runpy.py",
+line 193, in \_run\_module\_as\_main
+    "\_\_main\_\_", mod\_spec)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}runpy.py",
+line 85, in \_run\_code
+    exec(code, run\_globals)
+  File "C:\textbackslash{}Users\textbackslash{}MONEM\textbackslash{}AppData\textbackslash{}Local\textbackslash{}Programs\textbackslash{}Python\textbackslash{}Python37\textbackslash{}Scripts\textbackslash{}jupyter-
+nbconvert.EXE\textbackslash{}\_\_main\_\_.py", line 7, in <module>
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}jupyter\_core\textbackslash{}application.py", line 264, in launch\_instance
+    return super(JupyterApp, cls).launch\_instance(argv=argv, **kwargs)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}traitlets\textbackslash{}config\textbackslash{}application.py", line 846, in launch\_instance
+    app.start()
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}nbconvertapp.py", line 361, in start
+    self.convert\_notebooks()
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}nbconvertapp.py", line 533, in convert\_notebooks
+    self.convert\_single\_notebook(notebook\_filename)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}nbconvertapp.py", line 498, in convert\_single\_notebook
+    output, resources = self.export\_single\_notebook(notebook\_filename,
+resources, input\_buffer=input\_buffer)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}nbconvertapp.py", line 427, in export\_single\_notebook
+    output, resources = self.exporter.from\_filename(notebook\_filename,
+resources=resources)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}exporters\textbackslash{}exporter.py", line 190, in from\_filename
+    return self.from\_file(f, resources=resources, **kw)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}exporters\textbackslash{}exporter.py", line 208, in from\_file
+    return self.from\_notebook\_node(nbformat.read(file\_stream, as\_version=4),
+resources=resources, **kw)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}exporters\textbackslash{}pdf.py", line 183, in from\_notebook\_node
+    self.run\_latex(tex\_file)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}exporters\textbackslash{}pdf.py", line 154, in run\_latex
+    self.latex\_count, log\_error, raise\_on\_failure)
+  File "c:\textbackslash{}users\textbackslash{}monem\textbackslash{}appdata\textbackslash{}local\textbackslash{}programs\textbackslash{}python\textbackslash{}python37\textbackslash{}lib\textbackslash{}site-
+packages\textbackslash{}nbconvert\textbackslash{}exporters\textbackslash{}pdf.py", line 112, in run\_command
+    "at \{link\}.".format(formatter=command\_list[0], link=link))
+OSError: xelatex not found on PATH, if you have not installed xelatex you may
+need to do so. Find further instructions at
+https://nbconvert.readthedocs.io/en/latest/install.html\#installing-tex.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{!} jupyter nbconvert \PYZhy{}\PYZhy{}to html Data\PYZus{}Types\PYZus{}and\PYZus{}Operators.ipynb
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[NbConvertApp] Converting notebook Data\_Types\_and\_Operators.ipynb to html
+[NbConvertApp] Writing 660804 bytes to Data\_Types\_and\_Operators.html
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{!} jupyter nbconvert \PYZhy{}\PYZhy{}to latex Data\PYZus{}Types\PYZus{}and\PYZus{}Operators.ipynb
+\end{Verbatim}
+\end{tcolorbox}
+
+    .replace(`اللي موجود',`اللي عايوزه', `index')l;
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
